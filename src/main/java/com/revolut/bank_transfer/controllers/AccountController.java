@@ -12,11 +12,10 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
-
 import com.revolut.bank_transfer.api.Account;
 import com.revolut.bank_transfer.dao.AccountDao;
 
-@Path("api/v1/account")
+@Path("/api/v1/account")
 @Consumes(MediaType.APPLICATION_JSON)
 @Produces(MediaType.APPLICATION_JSON)
 public class AccountController {
@@ -25,6 +24,7 @@ public class AccountController {
     AccountDao accountDao;
     
     final BigDecimal ZERO = new BigDecimal("0.0");
+    
     @POST
     public Account createAccount(Account account) throws Exception {
         accountDao.createAccount(account);
@@ -38,7 +38,7 @@ public class AccountController {
     }
     
     @GET
-    @Path("/{accountId}")
+    @Path("details/{accountId}")
     public Account getAccountDetails(@PathParam("accountId") String accountId) throws Exception {
         Account account = null;
         Long id = Long.valueOf(accountId);
@@ -47,7 +47,7 @@ public class AccountController {
     }
     
     @PUT
-    @Path("/{withdraw}")
+    @Path("{accountId}/withdraw/{amount}")
     public Account withdrawFromAccount(@PathParam("accountId") String accountId, @PathParam("amount") String amount) throws Exception {
         Account account = null;
         Long id = Long.valueOf(accountId);
@@ -63,7 +63,7 @@ public class AccountController {
     }
     
     @PUT
-    @Path("/{deposit}")
+    @Path("{accountId}/deposit/{amount}")
     public Account depositToAccount(@PathParam("accountId") String accountId, @PathParam("amount") String amount) throws Exception {
         Account account = null;
         Long id = Long.valueOf(accountId);
@@ -73,4 +73,5 @@ public class AccountController {
         accountDao.updateAccount(account);
         return account;
     }
+    
 }

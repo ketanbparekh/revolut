@@ -4,7 +4,10 @@ import javax.inject.Singleton;
 
 import org.glassfish.hk2.utilities.binding.AbstractBinder;
 
+import com.revolut.bank_transfer.controllers.AccountController;
+import com.revolut.bank_transfer.controllers.TransactionController;
 import com.revolut.bank_transfer.dao.AccountDao;
+import com.revolut.bank_transfer.dao.TransactionDao;
 
 import io.dropwizard.Application;
 import io.dropwizard.jersey.setup.JerseyEnvironment;
@@ -20,8 +23,16 @@ public class RevolutApplication extends Application<RevolutConfiguration> {
             @Override
             protected void configure() {
                 bind(AccountDao.class).to(AccountDao.class).in(Singleton.class);
+                bind(TransactionDao.class).to(TransactionDao.class).in(Singleton.class);
             }
         });
+        environment.jersey().register(new AccountController());
+        environment.jersey().register(new TransactionController());
+
+    }
+    
+    public static void main(String[] args) throws Exception {
+        new RevolutApplication().run(args);
     }
 
 }

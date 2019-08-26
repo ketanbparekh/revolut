@@ -14,7 +14,7 @@ public class AccountDao {
     AtomicLong atomicLong = new AtomicLong();
     
     public Account createAccount(Account account) throws Exception {
-        account.setAccountId(atomicLong.getAndIncrement());
+        account.setAccountId(atomicLong.incrementAndGet());
         accountDB.put(account.getAccountId(), account);
         return account;
     }
