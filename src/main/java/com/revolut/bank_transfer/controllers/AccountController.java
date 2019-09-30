@@ -13,6 +13,7 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import com.revolut.bank_transfer.api.Account;
+import com.revolut.bank_transfer.api.Transaction;
 import com.revolut.bank_transfer.dao.AccountDao;
 
 @Path("/api/v1/account")
@@ -47,13 +48,12 @@ public class AccountController {
     }
     
     @PUT
-    @Path("{accountId}/withdraw/{amount}")
-    public Account withdrawFromAccount(@PathParam("accountId") String accountId, @PathParam("amount") String amount) throws Exception {
-        Account account = null;
-        Long id = Long.valueOf(accountId);
+    @Path("/withdraw/{amount}")
+    public Account withdrawFromAccount(Account account, @PathParam("amount") String amount) throws Exception {
+        Long id = Long.valueOf(account.getAccountId());
         BigDecimal withdrawlAmt = new BigDecimal(amount);
-        
         account = accountDao.getAccountDetails(id);
+        
         if(account.getBalance().subtract(withdrawlAmt).compareTo(ZERO) < 0)
             throw new Exception("Insufficient Balance");
         
@@ -63,15 +63,21 @@ public class AccountController {
     }
     
     @PUT
-    @Path("{accountId}/deposit/{amount}")
-    public Account depositToAccount(@PathParam("accountId") String accountId, @PathParam("amount") String amount) throws Exception {
-        Account account = null;
-        Long id = Long.valueOf(accountId);
+    @Path("/deposit/{amount}")
+    public Account depositToAccount(Account account, @PathParam("amount") String amount) throws Exception {
+        Long id = Long.valueOf(account.getAccountId());
         BigDecimal depositAmt = new BigDecimal(amount);
         account = accountDao.getAccountDetails(id);
         account.setBalance(account.getBalance().add(depositAmt));
         accountDao.updateAccount(account);
         return account;
+    }
+    
+    @POST
+    @Path("/transfer")
+    public Transaction transferMoney(Transaction transaction) throws Exception {
+        transaction = accountDao.transferAmount(transaction);
+        return transaction;
     }
     
 }

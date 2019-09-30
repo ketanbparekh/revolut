@@ -8,9 +8,9 @@ public class Transaction {
 
     private Long transactionId;
     
-    private int senderId;
+    private Long senderId;
     
-    private int receiverId;
+    private Long receiverId;
     
     private BigDecimal amount;
     
@@ -26,20 +26,20 @@ public class Transaction {
     }
     
     @JsonProperty("senderId")
-    public int getSenderId() {
+    public Long getSenderId() {
         return senderId;
     }
 
-    public void setSenderId(int senderId) {
+    public void setSenderId(Long senderId) {
         this.senderId = senderId;
     }
     
     @JsonProperty("receiverId")
-    public int getReceiverId() {
+    public Long getReceiverId() {
         return receiverId;
     }
     
-    public void setReceiverId(int receiverId) {
+    public void setReceiverId(Long receiverId) {
         this.receiverId = receiverId;
     }
     
@@ -72,8 +72,8 @@ public class Transaction {
         final int prime = 31;
         int result = 1;
         result = prime * result + ((amount == null) ? 0 : amount.hashCode());
-        result = prime * result + receiverId;
-        result = prime * result + senderId;
+        result = prime * result + receiverId.hashCode();
+        result = prime * result + senderId.hashCode();
         result = prime * result + ((status == null) ? 0 : status.hashCode());
         result = prime * result + ((transactionId == null) ? 0 : transactionId.hashCode());
         return result;

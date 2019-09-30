@@ -1,5 +1,6 @@
 package com.revolut.bank_transfer.dao;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -7,6 +8,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicLong;
 
 import com.revolut.bank_transfer.api.Account;
+import com.revolut.bank_transfer.api.Transaction;
 
 public class AccountDao {
 
@@ -39,5 +41,24 @@ public class AccountDao {
     public Account updateAccount(Account account) {
         accountDB.put(account.getAccountId(), account);
         return account;
+    }
+    
+    public Transaction transferAmount(Transaction transaction) throws Exception {
+        
+        Account srcAccount = getAccountDetails(Long.valueOf(transaction.getSenderId()));
+        Account destAccount = getAccountDetails(Long.valueOf(transaction.getReceiverId()));
+        BigDecimal senderBalance = srcAccount.getBalance();
+        
+        synchronized (senderBalance) {
+            if(senderBalance.compareTo(BigDecimal.ZERO) > 0 && senderBalance.subtract(transaction.getAmount()).compareTo(BigDecimal.ZERO) > 0 ) {
+                srcAccount.setBalance(senderBalance.subtract(transaction.getAmount()));
+                destAccount.setBalance(destAccount.getBalance().add(transaction.getAmount()));
+            } else
+                throw new Exception("Insufficient Amout in account to transfer");
+            
+            updateAccount(srcAccount);
+            updateAccount(destAccount);
+        }
+        return transaction;
     }
 }

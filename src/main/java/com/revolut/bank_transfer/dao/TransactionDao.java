@@ -21,8 +21,8 @@ public class TransactionDao {
     
     public Transaction transferAmount(Transaction transaction) throws Exception {
         
-        Account srcAccount = accountDao.getAccountDetails(new Long(transaction.getSenderId()));
-        Account destAccount = accountDao.getAccountDetails(new Long(transaction.getReceiverId()));
+        Account srcAccount = accountDao.getAccountDetails(Long.valueOf(transaction.getSenderId()));
+        Account destAccount = accountDao.getAccountDetails(Long.valueOf(transaction.getReceiverId()));
         
         BigDecimal senderBalance = srcAccount.getBalance();
         synchronized (senderBalance) {

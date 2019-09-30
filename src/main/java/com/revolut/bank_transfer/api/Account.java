@@ -15,7 +15,17 @@ public class Account {
     
     private List<Transaction> transactions;
     
-    //private
+    private TransactionType transactionType;
+    
+    @JsonProperty("transactionType")
+    public TransactionType getTransactionType() {
+        return transactionType;
+    }
+
+    public void setTransactionType(TransactionType transactionType) {
+        this.transactionType = transactionType;
+    }
+
     @JsonProperty("accountId")
     public Long getAccountId() {
         return accountId;
