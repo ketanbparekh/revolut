@@ -152,5 +152,16 @@ public class AccountControllerTest {
                 .get();
         accountResponse = objectMapper.readValue(response.readEntity(String.class), Account.class);
         assertEquals(new BigDecimal("22.86"), accountResponse.getBalance());
+        
+        
+        //Insufficient amount exception thrown
+        transaction = new Transaction();
+        transaction.setSenderId(1L);
+        transaction.setReceiverId(accountRequest1.getAccountId());
+        transaction.setAmount(new BigDecimal("122.86"));
+        response = appRule.client().target(String.format("http://localhost:%d/api/v1/account/transfer", appRule.getLocalPort()))
+                .request().post(Entity.entity(transaction, MediaType.APPLICATION_JSON_TYPE));
+        assertEquals(500, response.getStatus()); 
+        
     }
 }
